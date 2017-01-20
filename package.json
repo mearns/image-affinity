@@ -6,7 +6,7 @@
     "image-affinity-demo-server": "build/server/index.js"
   },
   "scripts": {
-    "clean": "rimraf dist/",
+    "clean": "rimraf build/",
     "check:lint:src": "eslint src/ --ext .js --ext .jsx",
     "check:lint:webpack-config": "eslint webpack.config.js",
     "check:lint": "npm run check:lint:src && npm run check:lint:webpack-config",

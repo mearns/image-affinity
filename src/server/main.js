@@ -31,6 +31,13 @@ export function main () {
             default: '',
             string: true
         })
+        .option('i', {
+            alias: 'image-dir',
+            description: 'The path to the directory of images.',
+            demand: true,
+            requiresArg: true,
+            path: true
+        })
         .strict()
         .help()
         .argv;
@@ -42,6 +49,7 @@ export function main () {
             .catch((error) => response.status(500).json(error));
     });
     app.use('/static/bundles/', express.static('./build/bundles/'));
+    app.use('/static/imgs/', express.static(args['image-dir']));
 
     app.listen(args.port, args.host, () => {
         console.log(`Listening on ${args.host}:${args.port} ...`);  // eslint-disable-line
