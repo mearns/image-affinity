@@ -15,6 +15,8 @@ function renderTemplate(name, ctx={}) {
         });
 }
 
+const IMAGE_BASE_URL = '/static/images';
+
 export function main () {
 
     const args = yargs
@@ -42,16 +44,34 @@ export function main () {
         .help()
         .argv;
 
+    const imageDir = args['image-dir'];
+
     const app = express();
     app.get('/', (request, response) => {
-        renderTemplate('index.html')
+        getImageList(imageDir)
+            .then((imageList) => {
+                return renderTemplate('index.html', {
+                    props: new Buffer(JSON.stringify({
+                        imageList
+                    })).toString('base64')
+                });
+            })
             .then((content) => response.type('text/html; charset=utf-8').send(content))
             .catch((error) => response.status(500).json(error));
     });
     app.use('/static/bundles/', express.static('./build/bundles/'));
-    app.use('/static/imgs/', express.static(args['image-dir']));
+    app.use(IMAGE_BASE_URL, express.static(imageDir));
 
     app.listen(args.port, args.host, () => {
         console.log(`Listening on ${args.host}:${args.port} ...`);  // eslint-disable-line
     })
+}
+
+function getImageFileUrl(fileName) {
+    return `${IMAGE_BASE_URL}/${fileName}`;
+}
+
+function getImageList(dir) {
+    return fs.readdir(dir)
+        .then((imageList) => imageList.map(getImageFileUrl));
 }

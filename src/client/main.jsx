@@ -3,6 +3,10 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 
 export function main() {
-    console.log('Hi, React.');  // eslint-disable-line
-    ReactDOM.render(<TestComponent/>, document.getElementById('frame'));
+    const props = JSON.parse(getInitialProps());
+    ReactDOM.render(<TestComponent {...props}/>, document.getElementById('frame'));
+}
+
+function getInitialProps () {
+    return new Buffer(document.getElementById('initial-props').textContent, 'base64').toString();
 }
