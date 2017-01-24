@@ -1,15 +1,18 @@
 import React from 'react';
 import mapObject from 'lodash.map';
+import {ImageItem} from './ImageItem.jsx';
 
 export class Affinity extends React.Component {
     render() {
         const listItems = mapObject(this.props.items, ({url, x, y}) => {
-            const left = `${5*x}px`;
-            const top = `${5*y}px`;
+            const initialSeparation = 10;
+            const props = {
+                url,
+                x: initialSeparation*x,
+                y: initialSeparation*y
+            };
             return (
-                <li key={url}>
-                    <img style={{position: 'absolute', left, top}} src={url} />
-                </li>
+                <li key={url}><ImageItem {...props} /></li>
             );
         });
         return (<ul>{listItems}</ul>);
