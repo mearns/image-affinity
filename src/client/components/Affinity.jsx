@@ -1,10 +1,10 @@
 import React from 'react';
-import mapObject from 'lodash.map';
 import {ImageItem} from './ImageItem.jsx';
+// import mapObject from 'lodash.map';
 
 export class Affinity extends React.Component {
     render() {
-        const listItems = mapObject(this.props.items, ({url, x, y}) => {
+        const listItems = this.props.items.map(({url, x, y}) => {
             const initialSeparation = 10;
             const props = {
                 url,
@@ -20,5 +20,5 @@ export class Affinity extends React.Component {
 }
 
 Affinity.propTypes = {
-    items: React.PropTypes.object
+    items: React.PropTypes.arrayOf(React.PropTypes.object)
 };

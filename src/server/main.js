@@ -5,6 +5,8 @@ import handlebars from 'handlebars';
 import deepAssign from 'deep-assign';
 import {version as APP_VERSION} from '../../package.json';
 import yargs from 'yargs';
+import imageSize from 'image-size';
+import Promise from 'bluebird';
 
 function renderTemplate(name, ctx={}) {
     const templatePath = path.resolve(__dirname, '..', 'templates', `${name}.hbs`)
@@ -71,7 +73,24 @@ function getImageFileUrl(fileName) {
     return `${IMAGE_BASE_URL}/${fileName}`;
 }
 
+const imageSizeAsPromised = Promise.promisify(imageSize);
+
+function getImageItem(dir, fileName) {
+    return imageSizeAsPromised(path.join(dir, fileName))
+        .then(({width, height}) => {
+            return {
+                url: getImageFileUrl(fileName),
+                dimensions: {
+                    width,
+                    height
+                }
+            };
+        });
+}
+
 function getImageList(dir) {
     return fs.readdir(dir)
-        .then((imageList) => imageList.map(getImageFileUrl));
+        .then((imageList) => {
+            return Promise.all(imageList.map((fileName) => getImageItem(dir, fileName)));
+        });
 }
