@@ -5,7 +5,7 @@ import handlebars from 'handlebars';
 import deepAssign from 'deep-assign';
 import {version as APP_VERSION} from '../../package.json';
 import yargs from 'yargs';
-import imageSize from 'image-size';
+import imageSize from 'imagesize';
 import Promise from 'bluebird';
 
 function renderTemplate(name, ctx={}) {
@@ -59,7 +59,9 @@ export function main () {
                 });
             })
             .then((content) => response.type('text/html; charset=utf-8').send(content))
-            .catch((error) => response.status(500).json(error));
+            .catch((error) => {
+                response.status(500).json({error: error.message});
+            });
     });
     app.use('/static/bundles/', express.static('./build/bundles/'));
     app.use(IMAGE_BASE_URL, express.static(imageDir));
@@ -75,15 +77,32 @@ function getImageFileUrl(fileName) {
 
 const imageSizeAsPromised = Promise.promisify(imageSize);
 
+/**
+ * Return a disposer that will provide a readable stream for the specified
+ * file path, and close the stream upon disposal.
+ */
+function getReadableStream(filePath) {
+    return Promise.resolve(fs.createReadStream(filePath))
+        .disposer((stream) => stream.close());
+}
+
+/**
+ * Return a promise to get the dimensions and type of the image file.
+ */
+function getImageFileSize(filePath) {
+    return Promise.using(getReadableStream(filePath), imageSizeAsPromised);
+}
+
 function getImageItem(dir, fileName) {
-    return imageSizeAsPromised(path.join(dir, fileName))
-        .then(({width, height}) => {
+    return getImageFileSize(path.join(dir, fileName))
+        .catch((error) => {
+            throw new Error(`Error getting image size for ${fileName}: ${error}`);
+        })
+        .timeout(1000, new Error(`Timedout getting image size for ${fileName}`))
+        .then((dimensions) => {
             return {
                 url: getImageFileUrl(fileName),
-                dimensions: {
-                    width,
-                    height
-                }
+                dimensions
             };
         });
 }
