@@ -11,21 +11,6 @@ export function main() {
 }
 
 function getInitialProps () {
-    return loadInitialJson()
-        .then((initialJson) => {
-            const items = initialJson.imageList.map(({url}, idx) => {
-                return {
-                    url: url,
-                    x: idx,
-                    y: idx
-                };
-            });
-
-            return {items};
-        });
-}
-
-function loadInitialJson () {
     return new Promise((fulfill) => {
         fulfill(JSON.parse(new Buffer(document.getElementById('initial-props').textContent, 'base64').toString()));
     });

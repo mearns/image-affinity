@@ -93,7 +93,7 @@ function getImageFileSize(filePath) {
     return Promise.using(getReadableStream(filePath), imageSizeAsPromised);
 }
 
-function getImageItem(dir, fileName) {
+function getImageItem(dir, fileName, x, y) {
     return getImageFileSize(path.join(dir, fileName))
         .catch((error) => {
             throw new Error(`Error getting image size for ${fileName}: ${error}`);
@@ -102,6 +102,8 @@ function getImageItem(dir, fileName) {
         .then((dimensions) => {
             return {
                 url: getImageFileUrl(fileName),
+                x,
+                y,
                 dimensions
             };
         });
@@ -110,6 +112,6 @@ function getImageItem(dir, fileName) {
 function getImageList(dir) {
     return fs.readdir(dir)
         .then((imageList) => {
-            return Promise.all(imageList.map((fileName) => getImageItem(dir, fileName)));
+            return Promise.all(imageList.map((fileName, idx) => getImageItem(dir, fileName, idx, idx)));
         });
 }

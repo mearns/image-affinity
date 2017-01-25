@@ -4,7 +4,7 @@ import {ImageItem} from './ImageItem.jsx';
 
 export class Affinity extends React.Component {
     render() {
-        const listItems = this.props.items.map(({url, x, y}) => {
+        const listItems = this.props.imageList.map(({url, x, y}) => {
             const initialSeparation = 10;
             const props = {
                 url,
@@ -20,5 +20,5 @@ export class Affinity extends React.Component {
 }
 
 Affinity.propTypes = {
-    items: React.PropTypes.arrayOf(React.PropTypes.object)
+    imageList: React.PropTypes.arrayOf(React.PropTypes.object).isRequired
 };
