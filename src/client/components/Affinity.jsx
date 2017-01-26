@@ -3,8 +3,14 @@ import {ImageItem} from './ImageItem.jsx';
 // import mapObject from 'lodash.map';
 
 export class Affinity extends React.Component {
+
+    constructor(props) {
+        super(props);
+        this.state = props;
+    }
+
     render() {
-        const listItems = this.props.imageList.map(({url, x, y, maxWidth, maxHeight, dimensions}) => {
+        const listItems = this.state.imageList.map(({url, x, y, maxWidth, maxHeight, dimensions}) => {
             const wscale = maxWidth / dimensions.width;
             const hscale = maxHeight / dimensions.height;
             const scale = Math.min(wscale, hscale);
@@ -16,7 +22,7 @@ export class Affinity extends React.Component {
                 y: y,
                 width: w,
                 height: h,
-                key: url
+                key: url,
             };
             return (
                 <ImageItem {...props} />
