@@ -50,11 +50,11 @@ export function main () {
 
     const app = express();
     app.get('/', (request, response) => {
-        getImageList(imageDir)
-            .then((imageList) => {
+        getImageSet(imageDir)
+            .then((imageSet) => {
                 return renderTemplate('index.html', {
                     props: new Buffer(JSON.stringify({
-                        imageList
+                        imageSet
                     })).toString('base64')
                 });
             })
@@ -100,10 +100,8 @@ function getImageItem({dir, fileName, x, y}) {
         })
         .timeout(1000, new Error(`Timedout getting image size for ${fileName}`))
         .then((dimensions) => {
-            const url = getImageFileUrl(fileName);
             return {
-                key: url,
-                url,
+                url: getImageFileUrl(fileName),
                 pos: {
                     x,
                     y
@@ -133,15 +131,21 @@ function getDisplayDimensions({width, height}) {
     };
 }
 
-function getImageList(dir) {
+function getImageSet(dir) {
     const initialSeparation = 30;
     const itemsPerColumn = 20;
     return fs.readdir(dir)
-        .then((imageList) => {
-            return Promise.all(imageList.map((fileName, idx) => {
+        .then((fileList) => {
+            return Promise.all(fileList.map((fileName, idx) => {
                 const x = (idx / itemsPerColumn) * maxWidth + initialSeparation;
                 const y = (idx % itemsPerColumn) * initialSeparation;
                 return getImageItem({dir, fileName, x, y});
             }));
-        });
+        })
+        .then((imageItemList) => {
+            return imageItemList.reduce((imageSet, imageItem, idx) => {
+                imageSet[`${idx}`] = imageItem;
+                return imageSet;
+            }, {});
+        })
 }

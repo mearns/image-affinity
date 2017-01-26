@@ -9,10 +9,16 @@ export class Affinity extends React.Component {
         this.state = props;
     }
 
+    dispatch(itemKey, signal, payload) {
+        console.log('Dispatching:', itemKey, signal, payload);  // eslint-disable-line
+    }
+
     render() {
-        const listItems = this.state.imageList.map((imageItem) => {
+        const listItems = Object.keys(this.state.imageSet).map((itemKey) => {
+            const imageItem = this.state.imageSet[itemKey];
+            const dispatch = this.dispatch.bind(this, itemKey);
             return (
-                <ImageItem {...imageItem} />
+                <ImageItem {...imageItem} dispatch={dispatch} key={itemKey} />
             );
         });
         return (<div>{listItems}</div>);
@@ -20,5 +26,5 @@ export class Affinity extends React.Component {
 }
 
 Affinity.propTypes = {
-    imageList: React.PropTypes.arrayOf(React.PropTypes.object).isRequired
+    imageSet: React.PropTypes.object.isRequired
 };
