@@ -10,8 +10,12 @@ export function main() {
         });
 }
 
+/**
+ * Load the initial top-level React property object from the JSON element the server put in the document. This will become the initial
+ * top-level state.
+ */
 function getInitialProps () {
-    return new Promise((fulfill) => {
-        fulfill(JSON.parse(new Buffer(document.getElementById('initial-props').textContent, 'base64').toString()));
+    return Promise.resolve().then(() => {
+        return JSON.parse(new Buffer(document.getElementById('initial-props').textContent, 'base64').toString());
     });
 }

@@ -87,41 +87,61 @@ function getReadableStream(filePath) {
 }
 
 /**
- * Return a promise to get the dimensions and type of the image file.
+ * Return a promise to get the dimensions of the image file.
  */
 function getImageFileSize(filePath) {
     return Promise.using(getReadableStream(filePath), imageSizeAsPromised);
 }
 
-function getImageItem({dir, fileName, x, y, maxWidth, maxHeight}) {
+function getImageItem({dir, fileName, x, y}) {
     return getImageFileSize(path.join(dir, fileName))
         .catch((error) => {
             throw new Error(`Error getting image size for ${fileName}: ${error}`);
         })
         .timeout(1000, new Error(`Timedout getting image size for ${fileName}`))
         .then((dimensions) => {
+            const url = getImageFileUrl(fileName);
             return {
-                url: getImageFileUrl(fileName),
-                x,
-                y,
-                maxWidth,
-                maxHeight,
-                dimensions
+                key: url,
+                url,
+                pos: {
+                    x,
+                    y
+                },
+                dims: {
+                    orig: {
+                        width: dimensions.width,
+                        height: dimensions.height
+                    },
+                    display: getDisplayDimensions(dimensions)
+                },
+                selected: false
             };
         });
+}
+
+const maxWidth = 300;
+const maxHeight = 200;
+
+function getDisplayDimensions({width, height}) {
+    const wscale = maxWidth / width;
+    const hscale = maxHeight / height;
+    const scale = Math.min(wscale, hscale);
+    return {
+        width: scale * width,
+        height: scale * height
+    };
 }
 
 function getImageList(dir) {
     const initialSeparation = 30;
     const itemsPerColumn = 20;
-    const maxWidth = 300;
-    const maxHeight = 200;
     return fs.readdir(dir)
         .then((imageList) => {
             return Promise.all(imageList.map((fileName, idx) => {
                 const x = (idx / itemsPerColumn) * maxWidth + initialSeparation;
                 const y = (idx % itemsPerColumn) * initialSeparation;
-                return getImageItem({dir, fileName, x, y, maxWidth, maxHeight});
+                return getImageItem({dir, fileName, x, y});
             }));
         });
 }
