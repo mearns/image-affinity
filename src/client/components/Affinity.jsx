@@ -9,14 +9,23 @@ export class Affinity extends React.Component {
         this.state = props;
     }
 
-    dispatch(itemKey, signal, payload) {
-        console.log('Dispatching:', itemKey, signal, payload);  // eslint-disable-line
+    dispatch({itemKey, signal}) {
+        switch(signal) {
+            case 'toggle-image-selected':
+                this.setState((oldState) => {
+                    oldState.imageSet[itemKey].selected = !oldState.imageSet[itemKey].selected;
+                    return oldState;
+                });
+            break;
+        }
     }
 
     render() {
         const listItems = Object.keys(this.state.imageSet).map((itemKey) => {
             const imageItem = this.state.imageSet[itemKey];
-            const dispatch = this.dispatch.bind(this, itemKey);
+            const dispatch = function({signal, payload}) {
+                this.dispatch({itemKey, signal, payload});
+            }.bind(this);
             return (
                 <ImageItem {...imageItem} dispatch={dispatch} key={itemKey} />
             );

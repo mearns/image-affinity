@@ -10,15 +10,19 @@ export class ImageItem extends React.Component {
     }
 
     handleClick(e) {
-        this.props.dispatch('clicked', e);
+        this.props.dispatch({
+            signal: 'toggle-image-selected',
+            payload: e
+        });
     }
 
     render() {
         const left = `${this.props.pos.x}px`;
         const top = `${this.props.pos.y}px`;
+        const border = this.props.selected ? '5px solid blue' : '1px solid #999';
         const style = {
             position: 'absolute',
-            border: '1px solid white',
+            border,
             left,
             top
         };
