@@ -9,14 +9,17 @@ export class Affinity extends React.Component {
         this.state = props;
     }
 
-    dispatch({itemKey, signal}) {
+    dispatch({itemKey, signal, payload}) {
+        this.setState((oldState) => {
+            return this.imageSelectReducer(oldState, {itemKey, signal, payload})
+        });
+    }
+
+    imageSelectReducer(oldState, {itemKey, signal}) {
         switch(signal) {
             case 'toggle-image-selected':
-                this.setState((oldState) => {
-                    oldState.imageSet[itemKey].selected = !oldState.imageSet[itemKey].selected;
-                    return oldState;
-                });
-            break;
+                oldState.imageSet[itemKey].selected = !oldState.imageSet[itemKey].selected;
+                return oldState;
         }
     }
 
