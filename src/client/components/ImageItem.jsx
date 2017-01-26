@@ -2,18 +2,16 @@ import React from 'react';
 
 export class ImageItem extends React.Component {
     render() {
-        const MAX_WIDTH=300;
-        const MAX_HEIGHT=200;
         const left = `${this.props.x}px`;
         const top = `${this.props.y}px`;
-        const wscale = MAX_WIDTH / this.props.width;
-        const hscale = MAX_HEIGHT / this.props.height;
-        // FIXME: XXX: Double check that I'm picking the right one here.
-        const scale = Math.min(wscale, hscale);
-        const w = scale * this.props.width;
-        const h = scale * this.props.height;
+        const style = {
+            position: 'absolute',
+            border: '1px solid white',
+            left,
+            top
+        };
         return (
-            <img style={{position: 'absolute', left, top}} width={w} height={h} src={this.props.url} />
+            <img style={style} width={this.props.width} height={this.props.height} src={this.props.url} />
         );
     }
 }

@@ -93,7 +93,7 @@ function getImageFileSize(filePath) {
     return Promise.using(getReadableStream(filePath), imageSizeAsPromised);
 }
 
-function getImageItem(dir, fileName, x, y) {
+function getImageItem({dir, fileName, x, y, maxWidth, maxHeight}) {
     return getImageFileSize(path.join(dir, fileName))
         .catch((error) => {
             throw new Error(`Error getting image size for ${fileName}: ${error}`);
@@ -104,14 +104,24 @@ function getImageItem(dir, fileName, x, y) {
                 url: getImageFileUrl(fileName),
                 x,
                 y,
+                maxWidth,
+                maxHeight,
                 dimensions
             };
         });
 }
 
 function getImageList(dir) {
+    const initialSeparation = 30;
+    const itemsPerColumn = 20;
+    const maxWidth = 300;
+    const maxHeight = 200;
     return fs.readdir(dir)
         .then((imageList) => {
-            return Promise.all(imageList.map((fileName, idx) => getImageItem(dir, fileName, idx, idx)));
+            return Promise.all(imageList.map((fileName, idx) => {
+                const x = (idx / itemsPerColumn) * maxWidth + initialSeparation;
+                const y = (idx % itemsPerColumn) * initialSeparation;
+                return getImageItem({dir, fileName, x, y, maxWidth, maxHeight});
+            }));
         });
 }

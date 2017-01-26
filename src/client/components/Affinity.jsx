@@ -4,20 +4,25 @@ import {ImageItem} from './ImageItem.jsx';
 
 export class Affinity extends React.Component {
     render() {
-        const listItems = this.props.imageList.map(({url, x, y, dimensions}) => {
-            const initialSeparation = 10;
+        const listItems = this.props.imageList.map(({url, x, y, maxWidth, maxHeight, dimensions}) => {
+            const wscale = maxWidth / dimensions.width;
+            const hscale = maxHeight / dimensions.height;
+            const scale = Math.min(wscale, hscale);
+            const w = scale * dimensions.width;
+            const h = scale * dimensions.height;
             const props = {
                 url,
-                x: initialSeparation*x,
-                y: initialSeparation*y,
-                width: dimensions.width,
-                height: dimensions.height
+                x: x,
+                y: y,
+                width: w,
+                height: h,
+                key: url
             };
             return (
-                <li key={url}><ImageItem {...props} /></li>
+                <ImageItem {...props} />
             );
         });
-        return (<ul>{listItems}</ul>);
+        return (<div>{listItems}</div>);
     }
 }
 
