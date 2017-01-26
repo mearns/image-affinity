@@ -6,7 +6,6 @@ import Promise from 'bluebird';
 export function main() {
     getInitialProps()
         .then((props) => {
-            console.log(props); // eslint-disable-line
             ReactDOM.render(<Affinity {...props}/>, document.getElementById('frame'));
         });
 }
