@@ -22,8 +22,10 @@ export class Affinity extends React.Component {
             const dispatch = function({type, payload}) {
                 this.dispatch({itemKey, type, payload});
             }.bind(this);
+            // XXX: FIXME: Use this instead of the selected attribute on each item, clean up reducers.
+            const selected2 = Boolean(this.state.selectedImages[itemKey]);
             return (
-                <ImageItem {...imageItem} dispatch={dispatch} key={itemKey} />
+                <ImageItem {...imageItem} selected2={selected2} dispatch={dispatch} key={itemKey} />
             );
         });
         return (<div>{listItems}</div>);

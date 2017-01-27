@@ -54,7 +54,8 @@ export function main () {
             .then((imageSet) => {
                 return renderTemplate('index.html', {
                     props: new Buffer(JSON.stringify({
-                        imageSet
+                        imageSet,
+                        selectedImages: {}
                     })).toString('base64')
                 });
             })
