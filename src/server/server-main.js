@@ -113,8 +113,7 @@ function getImageItem({dir, fileName, x, y}) {
                         height: dimensions.height
                     },
                     display: getDisplayDimensions(dimensions)
-                },
-                selected: false
+                }
             };
         });
 }

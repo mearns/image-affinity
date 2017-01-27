@@ -19,7 +19,7 @@ export class ImageItem extends React.Component {
     render() {
         const left = `${this.props.pos.x}px`;
         const top = `${this.props.pos.y}px`;
-        const border = this.props.selected2 ? '5px solid red' : '1px solid #999';
+        const border = this.props.selected ? '5px solid blue' : '1px solid #999';
         const style = {
             position: 'absolute',
             border,
@@ -54,6 +54,5 @@ ImageItem.propTypes = {
         })
     }),
     selected: React.PropTypes.bool.isRequired,
-    selected2: React.PropTypes.bool.isRequired,
     dispatch: React.PropTypes.func.isRequired
 };

@@ -18,3 +18,7 @@ export function createCompoundReducer(components) {
         return state;
     };
 }
+
+export function identityReducer(state) {
+    return state;
+}

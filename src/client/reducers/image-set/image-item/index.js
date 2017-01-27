@@ -1,8 +1,5 @@
-import * as selectedReducer from './selected-reducer.js';
-import {createCompoundReducer} from '../../../compound-reducer.js';
+import {identityReducer} from '../../../reducer-utils.js';
 
 export function get() {
-    return createCompoundReducer({
-        selected: selectedReducer.get()
-    });
+    return identityReducer;
 }
