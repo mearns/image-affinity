@@ -8,16 +8,18 @@
   "scripts": {
     "clean": "rimraf build/",
     "check:lint:src": "eslint src/ --ext .js --ext .jsx",
+    "check:lint:test": "eslint test/ --ext .js --ext .jsx",
     "check:lint:webpack-config": "eslint webpack.config.js",
-    "check:lint": "npm run check:lint:src && npm run check:lint:webpack-config",
+    "check:lint": "npm run check:lint:src && npm run check:lint:test && npm run check:lint:webpack-config",
     "check": "npm run check:lint",
     "test": "nyc mocha",
+    "verify": "npm run check && npm run test",
     "compile:templates": "mkdirp build/templates/ && copyfiles --up 2 'src/templates/**/*' build/templates/",
     "compile:webpack": "webpack --config webpack.config.js",
     "compile": "npm run compile:webpack && npm run compile:templates",
     "transpile:server": "babel src/server/ --out-dir build/server/",
     "transpile": "npm run transpile:server",
-    "build": "npm run clean && npm run check && npm run compile && npm run transpile",
+    "build": "npm run clean && npm run verify && npm run compile && npm run transpile",
     "start": "node build/server/index.js"
   },
   "repository": {

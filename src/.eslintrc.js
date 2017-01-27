@@ -3,11 +3,11 @@
 
 module.exports = {
     env: {
-        "es6": true
+        es6: true
     },
 
     parserOptions: {
-        "sourceType": "module"
+        sourceType: "module"
     },
 
     extends: ["eslint:recommended", "plugin:react/recommended"],
@@ -17,27 +17,27 @@ module.exports = {
     ],
 
     ecmaFeatures: {
-        "arrowFunctions": true,
-        "binaryLiterals": true,
-        "blockBindings": true,
-        "classes": true,
-        "defaultParams": true,
-        "destructuring": true,
-        "forOf": true,
-        "generators": true,
-        "modules": true,
-        "objectLiteralComputedProperties": true,
-        "objectLiteralDuplicateProperties": true,
-        "objectLiteralShorthandMethods": true,
-        "objectLiteralShorthandProperties": true,
-        "octalLiterals": true,
-        "regexUFlag": true,
-        "regexYFlag": true,
-        "spread": true,
-        "superInFunctions": true,
-        "templateStrings": true,
-        "unicodeCodePointEscapes": true,
-        "globalReturn": true
+        arrowFunctions: true,
+        binaryLiterals: true,
+        blockBindings: true,
+        classes: true,
+        defaultParams: true,
+        destructuring: true,
+        forOf: true,
+        generators: true,
+        modules: true,
+        objectLiteralComputedProperties: true,
+        objectLiteralDuplicateProperties: true,
+        objectLiteralShorthandMethods: true,
+        objectLiteralShorthandProperties: true,
+        octalLiterals: true,
+        regexUFlag: true,
+        regexYFlag: true,
+        spread: true,
+        superInFunctions: true,
+        templateStrings: true,
+        unicodeCodePointEscapes: true,
+        globalReturn: true
     },
 
     rules: {

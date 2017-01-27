@@ -1,13 +1,13 @@
 module.exports = {
-    "env": {
-        "node": true
+    env: {
+        node: true
     },
 
-    "parser": "babel-eslint",
+    parser: "babel-eslint",
 
-    "extends": ["eslint:recommended"],
+    extends: ["eslint:recommended"],
 
-    "rules": {
+    rules: {
         "strict": [2, "global"],
         "no-unexpected-multiline": 2,
         "block-scoped-var": 2,
