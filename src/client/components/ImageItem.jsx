@@ -11,7 +11,7 @@ export class ImageItem extends React.Component {
 
     handleClick(e) {
         this.props.dispatch({
-            signal: 'toggle-image-selected',
+            type: 'toggle-image-selected',
             payload: e
         });
     }
