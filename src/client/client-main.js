@@ -1,4 +1,4 @@
-import {Affinity} from './components/Affinity.jsx';
+import {Affinity} from './components/Affinity';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Promise from 'bluebird';

@@ -2,7 +2,7 @@
 import {expect} from 'chai';
 
 // Module Under test
-import * as reducerUtils from '../../src/client/reducer-utils.js';
+import * as reducerUtils from '../../src/client/reducer-utils';
 
 describe('reducer-utils module', () => {
 

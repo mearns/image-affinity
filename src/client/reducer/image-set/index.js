@@ -1,4 +1,4 @@
-import * as imageItemReducer from './image-item/index.js';
+import * as imageItemReducer from './image-item';
 
 export function get() {
     const itemReducer = imageItemReducer.get();

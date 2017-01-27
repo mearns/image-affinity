@@ -1,3 +1,3 @@
 
-import {main} from './client-main.jsx';
+import {main} from './client-main';
 main();

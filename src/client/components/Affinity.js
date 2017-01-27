@@ -1,6 +1,6 @@
 import React from 'react';
-import {ImageItem} from './ImageItem.jsx';
-import * as reducer from '../reducers/index.js';
+import {ImageItem} from './ImageItem';
+import * as reducer from '../reducer';
 
 export class Affinity extends React.Component {
 

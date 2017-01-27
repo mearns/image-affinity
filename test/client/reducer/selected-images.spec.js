@@ -6,7 +6,7 @@ const Actions = {
 };
 
 // Module Under test
-import * as selectedImages from '../../../src/client/reducers/selected-images';
+import * as selectedImages from '../../../src/client/reducer/selected-images';
 
 describe('selected-images reducer', () => {
     let reducerUnderTest;

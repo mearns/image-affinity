@@ -3,11 +3,11 @@ import {expect} from 'chai';
 import sinon from 'sinon';
 
 // For mocking
-import * as imageSetReducer from '../../../src/client/reducers/image-set';
-import * as selectedImagesReducer from '../../../src/client/reducers/selected-images';
+import * as imageSetReducer from '../../../src/client/reducer/image-set';
+import * as selectedImagesReducer from '../../../src/client/reducer/selected-images';
 
 // Module Under test
-import * as reducers from '../../../src/client/reducers/index.js';
+import * as reducers from '../../../src/client/reducer/index.js';
 
 describe('The reducers module', () => {
     describe('the returned reducer function', () => {
