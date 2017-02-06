@@ -1,18 +1,19 @@
 import React from 'react';
 import {ImageItem} from './ImageItem';
 import * as reducer from '../reducer';
+import {StateStore} from '../../services/state-store';
 
 export class Affinity extends React.Component {
 
     constructor(props) {
         super(props);
         this.state = props;
-        this._reducer = reducer.get();
+        this._stateStore = new StateStore(reducer.get());
     }
 
-    dispatch(action) {
+    dispatch(...actions) {
         this.setState((oldState) => {
-            return this._reducer(oldState, action);
+            return this._stateStore.dispatch(oldState, ...actions);
         });
     }
 
