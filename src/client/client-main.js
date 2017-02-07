@@ -1,21 +1,29 @@
-import {Affinity} from './components/Affinity';
+import {Affinity} from '../components/Affinity';
+import {Provider} from 'react-redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Promise from 'bluebird';
+import * as stateManager from '../state-manager';
 
 export function main() {
-    getInitialProps()
-        .then((props) => {
-            ReactDOM.render(<Affinity {...props}/>, document.getElementById('frame'));
+    getInitialState()
+        .then((state) => {
+            console.log('Initial state', state);    // eslint-disable-line
+            const store = stateManager.getStore(state);
+            ReactDOM.render(
+                (<Provider store={store}>
+                    <Affinity />
+                </Provider>),
+                document.getElementById('root')
+            );
         });
 }
 
 /**
- * Load the initial top-level React property object from the JSON element the server put in the document. This will become the initial
- * top-level state.
+ * Load the initial state object from the JSON element the server put in the document.
  */
-function getInitialProps () {
+function getInitialState () {
     return Promise.resolve().then(() => {
-        return JSON.parse(new Buffer(document.getElementById('initial-props').textContent, 'base64').toString());
+        return JSON.parse(new Buffer(document.getElementById('initial-state').textContent, 'base64').toString());
     });
 }

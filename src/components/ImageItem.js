@@ -1,0 +1,56 @@
+import React from 'react';
+
+const propTypes = {
+    url: React.PropTypes.string.isRequired,
+    pos: React.PropTypes.shape({
+        x: React.PropTypes.number.isRequired,
+        y: React.PropTypes.number.isRequired
+    }),
+    dims: React.PropTypes.shape({
+        orig: React.PropTypes.shape({
+            width: React.PropTypes.number.isRequired,
+            height: React.PropTypes.number.isRequired
+        }),
+        display: React.PropTypes.shape({
+            width: React.PropTypes.number.isRequired,
+            height: React.PropTypes.number.isRequired
+        })
+    }),
+    selected: React.PropTypes.bool.isRequired,
+    dispatch: React.PropTypes.func.isRequired
+};
+
+export class ImageItem extends React.Component {
+    constructor(props) {
+        super(props);
+
+        this.handleOnClick = this.handleOnClick.bind(this);
+    }
+
+    handleOnClick(event) {
+        this.props.dispatch({type: 'test-action', payload: event});
+    }
+
+    render() {
+        const left = `${this.props.pos.x}px`;
+        const top = `${this.props.pos.y}px`;
+        const border = this.props.selected ? '5px solid blue' : '1px solid #999';
+        const style = {
+            position: 'absolute',
+            border,
+            left,
+            top
+        };
+        return (
+            <img
+                draggable={true}
+                style={style}
+                width={this.props.dims.display.width}
+                height={this.props.dims.display.height}
+                src={this.props.url}
+                onClick={this.handleOnClick}
+                />
+        );
+    }
+}
+ImageItem.propTypes = propTypes;

@@ -33,7 +33,8 @@
       "react"
     ],
     "plugins": [
-      "transform-object-assign"
+      "transform-object-assign",
+      "transform-object-rest-spread"
     ]
   },
   "nyc": {
@@ -80,6 +81,7 @@
     "webpack": "1.13.0"
   },
   "dependencies": {
+    "babel-plugin-transform-object-rest-spread": "6.22.0",
     "bluebird": "3.4.7",
     "copyfiles": "1.0.0",
     "deep-assign": "2.0.0",
