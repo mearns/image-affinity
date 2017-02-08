@@ -23,7 +23,15 @@ const propTypes = {
 export class ImageItem extends React.Component {
     constructor(props) {
         super(props);
-        this.handleOnClick = this.handleOnClick.bind(this);
+
+        [
+            'handleOnClick',
+            'handleDragStart',
+            'handleDrag',
+            'handleDragEnd'
+        ].forEach((key) => {
+            this[key] = this[key].bind(this);
+        }, this);
     }
 
     handleOnClick(event) {
@@ -33,6 +41,34 @@ export class ImageItem extends React.Component {
         else {
             this.props.dispatch({type: 'toggle-select-only-item'});
         }
+    }
+
+    handleDragStart(event) {
+        this.props.dispatch({
+            type: 'item-drag-start',
+            payload: {
+                pos: {
+                    x: event.clientX,
+                    y: event.clientY
+                }
+            }
+        });
+    }
+
+    handleDragEnd() {
+        this.props.dispatch({type: 'item-drag-end'});
+    }
+
+    handleDrag(event) {
+        this.props.dispatch({
+            type: 'item-drag',
+            payload: {
+                pos: {
+                    x: event.clientX,
+                    y: event.clientY
+                }
+            }
+        });
     }
 
     render() {
@@ -47,12 +83,14 @@ export class ImageItem extends React.Component {
         };
         return (
             <img
-                draggable={true}
                 style={style}
                 width={this.props.dims.display.width}
                 height={this.props.dims.display.height}
                 src={this.props.url}
                 onClick={this.handleOnClick}
+                onDragStart={this.handleDragStart}
+                onDragEnd={this.handleDragEnd}
+                onDrag={this.handleDrag}
                 />
         );
     }

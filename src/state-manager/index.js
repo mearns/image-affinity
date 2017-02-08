@@ -1,13 +1,58 @@
 import {createStore} from 'redux';
 
 function reducer(state, action) {
-    const reducers = [reduceSelectedItems];
+    const reducers = [selectedItemsReducer, dragReducer];
     return reducers.reduce((oldState, reducer) => {
         return reducer(oldState, action);
     }, state);
 }
 
-function reduceSelectedItems(state, {type, payload}) {
+function dragReducer(state, {type, payload}) {
+    const newState = Object.assign({}, state);
+    switch (type) {
+        case 'item-drag-start': {
+            newState.drag = {
+                start: {
+                    x: payload.itemPayload.pos.x,
+                    y: payload.itemPayload.pos.y
+                },
+                // FIXME: Instead of tracking state.selectedImages, put a boolean 'selected'
+                // field in each item, and build drag.selectedImages on drag start.
+                selectedImages: Object.keys(state.selectedImages)
+                    .map((itemKey) => {
+                        const item = state.imageSet[itemKey];
+                        return {
+                            itemKey,
+                            start: {
+                                x: item.pos.x,
+                                y: item.pos.y
+                            }
+                        }
+                    })
+            };
+        } break;
+
+        case 'item-drag-end': {
+            newState.drag = null;
+        } break;
+
+        case 'item-drag': {
+            const pos = payload.itemPayload.pos;
+            const dx = pos.x - state.drag.start.x;
+            const dy = pos.y - state.drag.start.y;
+            state.drag.selectedImages.forEach(({itemKey, start}) => {
+                newState.imageSet[itemKey].pos.x = start.x + dx;
+                newState.imageSet[itemKey].pos.y = start.y + dy;
+                // XXX: FIXME: For the last drag event, for some reason the event.clientX and clientY (stored
+                // here in "itemPayload.pos" end up both as 0.
+                console.log(itemKey, newState.imageSet[itemKey].pos, pos, state.drag.start);
+            });
+        } break;
+    }
+    return newState;
+}
+
+function selectedItemsReducer(state, {type, payload}) {
     const newState = Object.assign({}, state);
     switch (type) {
         case 'toggle-select-item': {
@@ -16,7 +61,7 @@ function reduceSelectedItems(state, {type, payload}) {
                 delete(newState.selectedImages[itemKey]);
             }
             else {
-                newState.selectedImages[itemKey] = newState.imageSet[itemKey];
+                newState.selectedImages[itemKey] = true;
             }
         } break;
 
@@ -29,13 +74,13 @@ function reduceSelectedItems(state, {type, payload}) {
                 }
                 else {
                     newState.selectedImages = {
-                        [itemKey]: newState.imageSet[itemKey]
+                        [itemKey]: true
                     };
                 }
             }
             else {
                 newState.selectedImages = {
-                    [itemKey]: newState.imageSet[itemKey]
+                    [itemKey]: true
                 };
             }
         } break;
