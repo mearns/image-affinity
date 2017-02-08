@@ -1,9 +1,46 @@
 import {createStore} from 'redux';
-// import * as reducer from './reducer';
 
 function reducer(state, action) {
-    console.log('Action dispatched:', action);  // eslint-disable-line
-    return state;
+    const reducers = [reduceSelectedItems];
+    return reducers.reduce((oldState, reducer) => {
+        return reducer(oldState, action);
+    }, state);
+}
+
+function reduceSelectedItems(state, {type, payload}) {
+    const newState = Object.assign({}, state);
+    switch (type) {
+        case 'toggle-select-item': {
+            const {itemKey} = payload;
+            if (newState.selectedImages[itemKey]) {
+                delete(newState.selectedImages[itemKey]);
+            }
+            else {
+                newState.selectedImages[itemKey] = newState.imageSet[itemKey];
+            }
+        } break;
+
+        case 'toggle-select-only-item': {
+            const {itemKey} = payload;
+            const ONLY_ONE_SELECTED = 1;
+            if (newState.selectedImages.length === ONLY_ONE_SELECTED) {
+                if (newState.selectedImages[itemKey]) {
+                    newState.selectedImages = {};
+                }
+                else {
+                    newState.selectedImages = {
+                        [itemKey]: newState.imageSet[itemKey]
+                    };
+                }
+            }
+            else {
+                newState.selectedImages = {
+                    [itemKey]: newState.imageSet[itemKey]
+                };
+            }
+        } break;
+    }
+    return newState;
 }
 
 function _getStore(initialState) {

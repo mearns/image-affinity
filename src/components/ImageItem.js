@@ -23,12 +23,16 @@ const propTypes = {
 export class ImageItem extends React.Component {
     constructor(props) {
         super(props);
-
         this.handleOnClick = this.handleOnClick.bind(this);
     }
 
     handleOnClick(event) {
-        this.props.dispatch({type: 'test-action', payload: event});
+        if (event.altKey) {
+            this.props.dispatch({type: 'toggle-select-item'});
+        }
+        else {
+            this.props.dispatch({type: 'toggle-select-only-item'});
+        }
     }
 
     render() {
