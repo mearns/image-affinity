@@ -10,7 +10,10 @@ function reducer(state, action) {
 function dragReducer(state, {type, payload}) {
     const newState = Object.assign({}, state);
     switch (type) {
+
         case 'item-drag-start': {
+            const {itemKey} = payload;
+            const item = state.imageSet[itemKey];
             newState.drag = {
                 start: {
                     x: payload.itemPayload.pos.x,
@@ -18,17 +21,13 @@ function dragReducer(state, {type, payload}) {
                 },
                 // FIXME: Instead of tracking state.selectedImages, put a boolean 'selected'
                 // field in each item, and build drag.selectedImages on drag start.
-                selectedImages: Object.keys(state.selectedImages)
-                    .map((itemKey) => {
-                        const item = state.imageSet[itemKey];
-                        return {
-                            itemKey,
-                            start: {
-                                x: item.pos.x,
-                                y: item.pos.y
-                            }
-                        }
-                    })
+                selectedImages: [{
+                    itemKey,
+                    start: {
+                        x: item.pos.x,
+                        y: item.pos.y
+                    }
+                }]
             };
         } break;
 
@@ -36,22 +35,16 @@ function dragReducer(state, {type, payload}) {
             newState.drag = null;
         } break;
 
-        case 'item-drag': {
-            const pos = payload.itemPayload.pos;
-            const dx = pos.x - state.drag.start.x;
-            const dy = pos.y - state.drag.start.y;
-            state.drag.selectedImages.forEach(({itemKey, start}) => {
-                newState.imageSet[itemKey].pos.x = start.x + dx;
-                newState.imageSet[itemKey].pos.y = start.y + dy;
-                // XXX: FIXME: For the last drag event, for some reason the event.clientX and clientY (stored
-                // here in "itemPayload.pos" end up both as 0.
-                console.log(['pageX', 'detail', 'eventPhase', 'nativeEvent', 'target', 'type', 'view']
-                    .reduce((obj, prop) => {
-                        obj[prop] = payload.itemPayload.event[prop];
-                        return obj;
-                    }, {})
-                );
-            });
+        case 'mouse-move': {
+            if (state.drag) {
+                const pos = payload.pos;
+                const dx = pos.x - state.drag.start.x;
+                const dy = pos.y - state.drag.start.y;
+                state.drag.selectedImages.forEach(({itemKey, start}) => {
+                    newState.imageSet[itemKey].pos.x = start.x + dx;
+                    newState.imageSet[itemKey].pos.y = start.y + dy;
+                });
+            }
         } break;
     }
     return newState;

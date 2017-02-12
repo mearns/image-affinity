@@ -25,25 +25,17 @@ export class ImageItem extends React.Component {
         super(props);
 
         [
-            'handleOnClick',
-            'handleDragStart',
-            'handleDrag',
-            'handleDragEnd'
+            'handleMouseDown',
+            'handleMouseUp'
         ].forEach((key) => {
             this[key] = this[key].bind(this);
         }, this);
     }
 
-    handleOnClick(event) {
-        if (event.altKey) {
-            this.props.dispatch({type: 'toggle-select-item'});
-        }
-        else {
-            this.props.dispatch({type: 'toggle-select-only-item'});
-        }
-    }
-
-    handleDragStart(event) {
+    handleMouseDown(event) {
+        this.props.dispatch({
+            type: 'select-item'
+        });
         this.props.dispatch({
             type: 'item-drag-start',
             itemPayload: {
@@ -55,21 +47,8 @@ export class ImageItem extends React.Component {
         });
     }
 
-    handleDragEnd() {
+    handleMouseUp() {
         this.props.dispatch({type: 'item-drag-end'});
-    }
-
-    handleDrag(event) {
-        this.props.dispatch({
-            type: 'item-drag',
-            itemPayload: {
-                pos: {
-                    x: event.clientX,
-                    y: event.clientY
-                },
-                event
-            }
-        });
     }
 
     render() {
@@ -84,14 +63,13 @@ export class ImageItem extends React.Component {
         };
         return (
             <img
+                draggable={false}
                 style={style}
                 width={this.props.dims.display.width}
                 height={this.props.dims.display.height}
                 src={this.props.url}
-                onClick={this.handleOnClick}
-                onDragStart={this.handleDragStart}
-                onDragEnd={this.handleDragEnd}
-                onDrag={this.handleDrag}
+                onMouseDown={this.handleMouseDown}
+                onMouseUp={this.handleMouseUp}
                 />
         );
     }

@@ -4,7 +4,8 @@ import {connect} from 'react-redux';
 
 const propTypes = {
     itemList: React.PropTypes.array,
-    getImageItemDispatch: React.PropTypes.func
+    getImageItemDispatch: React.PropTypes.func,
+    handleMouseMove: React.PropTypes.func
 };
 
 class _Affinity extends React.Component {
@@ -18,7 +19,7 @@ class _Affinity extends React.Component {
                     />
                 );
         }, this);
-        return (<div>{itemList}</div>);
+        return (<div style={{width: '100%', height: '100%'}} onMouseMove={this.props.handleMouseMove}>{itemList}</div>);
     }
 }
 _Affinity.propTypes = propTypes;
@@ -39,6 +40,18 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
+        handleMouseMove: (event) => {
+            dispatch({
+                type: 'mouse-move',
+                payload: {
+                    pos: {
+                        x: event.clientX,
+                        y: event.clientY
+                    }
+                }
+            });
+        },
+
         getImageItemDispatch: (itemKey) => {
             return ({type, itemPayload}) => {
                 dispatch({type, payload: {itemKey, itemPayload}});
