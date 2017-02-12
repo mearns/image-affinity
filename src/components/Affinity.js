@@ -27,7 +27,7 @@ function getListItemsFromState(state) {
     return Object.keys(state.imageSet).map((itemKey) => {
         const item = state.imageSet[itemKey];
         const selected = Boolean(state.selectedImages[itemKey]);
-        return {...item, selected, itemKey};
+        return Object.assign({}, item, {selected, itemKey});
     });
 }
 
@@ -40,8 +40,8 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
     return {
         getImageItemDispatch: (itemKey) => {
-            return ({type, payload}) => {
-                dispatch({type, payload: {itemKey, itemPayload: payload}});
+            return ({type, itemPayload}) => {
+                dispatch({type, payload: {itemKey, itemPayload}});
             };
         }
     };

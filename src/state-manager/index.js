@@ -45,7 +45,12 @@ function dragReducer(state, {type, payload}) {
                 newState.imageSet[itemKey].pos.y = start.y + dy;
                 // XXX: FIXME: For the last drag event, for some reason the event.clientX and clientY (stored
                 // here in "itemPayload.pos" end up both as 0.
-                console.log(itemKey, newState.imageSet[itemKey].pos, pos, state.drag.start);
+                console.log(['pageX', 'detail', 'eventPhase', 'nativeEvent', 'target', 'type', 'view']
+                    .reduce((obj, prop) => {
+                        obj[prop] = payload.itemPayload.event[prop];
+                        return obj;
+                    }, {})
+                );
             });
         } break;
     }

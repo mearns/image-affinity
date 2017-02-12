@@ -46,7 +46,7 @@ export class ImageItem extends React.Component {
     handleDragStart(event) {
         this.props.dispatch({
             type: 'item-drag-start',
-            payload: {
+            itemPayload: {
                 pos: {
                     x: event.clientX,
                     y: event.clientY
@@ -62,11 +62,12 @@ export class ImageItem extends React.Component {
     handleDrag(event) {
         this.props.dispatch({
             type: 'item-drag',
-            payload: {
+            itemPayload: {
                 pos: {
                     x: event.clientX,
                     y: event.clientY
-                }
+                },
+                event
             }
         });
     }
