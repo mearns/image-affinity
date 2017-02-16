@@ -54,8 +54,7 @@ export function main () {
             .then((imageSet) => {
                 return renderTemplate('index.html', {
                     initialState: new Buffer(JSON.stringify({
-                        imageSet,
-                        selectedImages: {}
+                        imageSet
                     })).toString('base64')
                 });
             })
@@ -107,6 +106,7 @@ function getImageItem({dir, fileName, x, y}) {
                     x,
                     y
                 },
+                selected: false,
                 dims: {
                     orig: {
                         width: dimensions.width,

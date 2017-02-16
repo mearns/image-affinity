@@ -33,22 +33,29 @@ export class ImageItem extends React.Component {
     }
 
     handleMouseDown(event) {
-        this.props.dispatch({
-            type: 'select-item'
-        });
-        this.props.dispatch({
-            type: 'item-drag-start',
-            itemPayload: {
-                pos: {
-                    x: event.clientX,
-                    y: event.clientY
+        if (event.metaKey) {
+            this.props.dispatch({
+                type: 'select-item-toggle'
+            });
+        }
+        else {
+            this.props.dispatch({
+                type: 'select-item'
+            });
+            this.props.dispatch({
+                type: 'drag-item-start',
+                itemPayload: {
+                    pos: {
+                        x: event.clientX,
+                        y: event.clientY
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 
     handleMouseUp() {
-        this.props.dispatch({type: 'item-drag-end'});
+        this.props.dispatch({type: 'drag-item-end'});
     }
 
     render() {

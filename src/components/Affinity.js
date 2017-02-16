@@ -27,8 +27,7 @@ _Affinity.propTypes = propTypes;
 function getListItemsFromState(state) {
     return Object.keys(state.imageSet).map((itemKey) => {
         const item = state.imageSet[itemKey];
-        const selected = Boolean(state.selectedImages[itemKey]);
-        return Object.assign({}, item, {selected, itemKey});
+        return Object.assign({}, item, {itemKey});
     });
 }
 

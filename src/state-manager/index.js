@@ -7,43 +7,75 @@ function reducer(state, action) {
     }, state);
 }
 
+
+function getSelectedImages(state) {
+    return Object.keys(state.imageSet)
+        .filter((itemKey) => state.imageSet[itemKey].selected)
+        .map((itemKey) => {
+            const item = state.imageSet[itemKey];
+            return {
+                itemKey,
+                start: {
+                    x: item.pos.x,
+                    y: item.pos.y
+                }
+            };
+        });
+}
+
 function dragReducer(state, {type, payload}) {
     const newState = Object.assign({}, state);
     switch (type) {
 
-        case 'item-drag-start': {
-            const {itemKey} = payload;
-            const item = state.imageSet[itemKey];
+        case 'drag-item-start': {
             newState.drag = {
+                type: 'item',
+                didDrag: false,
+                sourceItemKey: payload.itemKey,
                 start: {
                     x: payload.itemPayload.pos.x,
                     y: payload.itemPayload.pos.y
                 },
-                // FIXME: Instead of tracking state.selectedImages, put a boolean 'selected'
-                // field in each item, and build drag.selectedImages on drag start.
-                selectedImages: [{
-                    itemKey,
-                    start: {
-                        x: item.pos.x,
-                        y: item.pos.y
-                    }
-                }]
+                selectedImages: getSelectedImages(state)
             };
         } break;
 
-        case 'item-drag-end': {
+        case 'drag-item-end': {
+            if (state.drag) {
+                switch (state.drag.type) {
+                    case 'item': {
+                        if (!state.drag.didDrag) {
+                            Object.keys(newState.imageSet).forEach((itemKey) => {
+                                newState.imageSet[itemKey].selected = false;
+                            });
+                            newState.imageSet[payload.itemKey].selected = true;
+                        }
+                    } break;
+
+                    default:
+                        throw new Error(`Unknown drag type: ${state.drag.type}`);
+                }
+            }
             newState.drag = null;
         } break;
 
         case 'mouse-move': {
             if (state.drag) {
-                const pos = payload.pos;
-                const dx = pos.x - state.drag.start.x;
-                const dy = pos.y - state.drag.start.y;
-                state.drag.selectedImages.forEach(({itemKey, start}) => {
-                    newState.imageSet[itemKey].pos.x = start.x + dx;
-                    newState.imageSet[itemKey].pos.y = start.y + dy;
-                });
+                state.drag.didDrag = true;
+                switch (state.drag.type) {
+                    case 'item': {
+                        const pos = payload.pos;
+                        const dx = pos.x - state.drag.start.x;
+                        const dy = pos.y - state.drag.start.y;
+                        state.drag.selectedImages.forEach(({itemKey, start}) => {
+                            newState.imageSet[itemKey].pos.x = start.x + dx;
+                            newState.imageSet[itemKey].pos.y = start.y + dy;
+                        });
+                    } break;
+
+                    default:
+                        throw new Error(`Unknown drag type: ${state.drag.type}`);
+                }
             }
         } break;
     }
@@ -53,34 +85,13 @@ function dragReducer(state, {type, payload}) {
 function selectedItemsReducer(state, {type, payload}) {
     const newState = Object.assign({}, state);
     switch (type) {
-        case 'toggle-select-item': {
-            const {itemKey} = payload;
-            if (newState.selectedImages[itemKey]) {
-                delete(newState.selectedImages[itemKey]);
-            }
-            else {
-                newState.selectedImages[itemKey] = true;
-            }
+        case 'select-item': {
+            state.imageSet[payload.itemKey].selected = true;
         } break;
 
-        case 'toggle-select-only-item': {
+        case 'select-item-toggle': {
             const {itemKey} = payload;
-            const ONLY_ONE_SELECTED = 1;
-            if (newState.selectedImages.length === ONLY_ONE_SELECTED) {
-                if (newState.selectedImages[itemKey]) {
-                    newState.selectedImages = {};
-                }
-                else {
-                    newState.selectedImages = {
-                        [itemKey]: true
-                    };
-                }
-            }
-            else {
-                newState.selectedImages = {
-                    [itemKey]: true
-                };
-            }
+            newState.imageSet[itemKey].selected = !state.imageSet[itemKey].selected;
         } break;
     }
     return newState;
