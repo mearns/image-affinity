@@ -45,10 +45,7 @@ function dragReducer(state, {type, payload}) {
                 switch (state.drag.type) {
                     case 'item': {
                         if (!state.drag.didDrag) {
-                            Object.keys(newState.imageSet).forEach((itemKey) => {
-                                newState.imageSet[itemKey].selected = false;
-                            });
-                            newState.imageSet[payload.itemKey].selected = true;
+                            selectItemOnly(newState, state.drag.sourceItemKey);
                         }
                     } break;
 
@@ -82,11 +79,18 @@ function dragReducer(state, {type, payload}) {
     return newState;
 }
 
+function selectItemOnly(state, itemKey) {
+    Object.keys(state.imageSet).forEach((itemKey) => {
+        state.imageSet[itemKey].selected = false;
+    });
+    state.imageSet[itemKey].selected = true;
+}
+
 function selectedItemsReducer(state, {type, payload}) {
     const newState = Object.assign({}, state);
     switch (type) {
-        case 'select-item': {
-            state.imageSet[payload.itemKey].selected = true;
+        case 'select-item-only': {
+            selectItemOnly(state, payload.itemKey);
         } break;
 
         case 'select-item-toggle': {

@@ -39,9 +39,11 @@ export class ImageItem extends React.Component {
             });
         }
         else {
-            this.props.dispatch({
-                type: 'select-item'
-            });
+            if (!this.props.selected) {
+                this.props.dispatch({
+                    type: 'select-item-only'
+                });
+            }
             this.props.dispatch({
                 type: 'drag-item-start',
                 itemPayload: {
