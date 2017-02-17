@@ -19,7 +19,13 @@ class _Affinity extends React.Component {
                     />
                 );
         }, this);
-        return (<div style={{width: '100%', height: '100%'}} onMouseMove={this.props.handleMouseMove}>{itemList}</div>);
+        return (
+            <div
+                style={{width: '100%', height: '100%'}}
+                onMouseMove={this.props.handleMouseMove}
+            >{itemList}
+            </div>
+        );
     }
 }
 _Affinity.propTypes = propTypes;

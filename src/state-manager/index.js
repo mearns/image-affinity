@@ -1,4 +1,8 @@
+/* eslint-env browser */
+
 import {createStore} from 'redux';
+
+const KEY_CODE_ESCAPE = 27;
 
 function reducer(state, action) {
     const reducers = [selectedItemsReducer, dragReducer];
@@ -38,6 +42,10 @@ function dragReducer(state, {type, payload}) {
                 },
                 selectedImages: getSelectedImages(state)
             };
+        } break;
+
+        case 'drag-item-force-end': {
+            newState.drag = null;
         } break;
 
         case 'drag-item-end': {
@@ -103,8 +111,16 @@ function selectedItemsReducer(state, {type, payload}) {
 
 function _getStore(initialState) {
     if (!_getStore.stateStore) {
-        console.log('Creating store: ', initialState);  // eslint-disable-line
         _getStore.stateStore = createStore(reducer, initialState);
+        if (document) {
+            document.addEventListener('keydown', (event) => {
+                if (event.keyCode === KEY_CODE_ESCAPE) {
+                    _getStore.stateStore.dispatch({
+                        type: 'drag-item-force-end'
+                    });
+                }
+            });
+        }
     }
     return _getStore.stateStore;
 }
