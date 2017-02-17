@@ -7,6 +7,7 @@ import {version as APP_VERSION} from '../../package.json';
 import yargs from 'yargs';
 import imageSize from 'imagesize';
 import Promise from 'bluebird';
+import bodyParser from 'body-parser';
 
 function renderTemplate(name, ctx={}) {
     const templatePath = path.resolve(__dirname, '..', 'templates', `${name}.hbs`)
@@ -49,6 +50,7 @@ export function main () {
     const imageDir = args['image-dir'];
 
     const app = express();
+    app.use(bodyParser.json());
     app.get('/', (request, response) => {
         getImageSet(imageDir)
             .then((imageSet) => {
@@ -62,6 +64,18 @@ export function main () {
             .catch((error) => {
                 response.status(500).json({error: error.message});
             });
+    });
+    app.post('/save', (request, response) => {
+        fs.writeFile('.saved-state.json', JSON.stringify(request.body), (error) => {
+            if (error) {
+                console.error('Error saving state:', error);    // eslint-disable-line
+                response.status(500).send('Error saving state');
+            }
+            else {
+                console.log('Saved state'); // eslint-disable-line
+                response.status(204).send();
+            }
+        });
     });
     app.use('/static/bundles/', express.static('./build/bundles/'));
     app.use(IMAGE_BASE_URL, express.static(imageDir));

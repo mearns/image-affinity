@@ -1,14 +1,23 @@
 /* eslint-env browser */
 
+import axios from 'axios';
 import {createStore} from 'redux';
 
 const KEY_CODE_ESCAPE = 27;
 
 function reducer(state, action) {
     const reducers = [selectedItemsReducer, dragReducer];
-    return reducers.reduce((oldState, reducer) => {
+    const newState = reducers.reduce((oldState, reducer) => {
         return reducer(oldState, action);
     }, state);
+    axios.post('/save', newState, { headers: {'Content-Type': 'application/json'}})
+        .then(() => {
+            console.log('Saved State'); // eslint-disable-line
+        })
+        .catch((error) => {
+            console.log('Error saving state', error);   // eslint-disable-line
+        })
+    return newState;
 }
 
 
