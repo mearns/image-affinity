@@ -72,7 +72,6 @@ export function main () {
                 response.status(500).send('Error saving state');
             }
             else {
-                console.log('Saved state'); // eslint-disable-line
                 response.status(204).send();
             }
         });

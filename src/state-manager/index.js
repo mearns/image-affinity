@@ -6,17 +6,10 @@ import {createStore} from 'redux';
 const KEY_CODE_ESCAPE = 27;
 
 function reducer(state, action) {
-    const reducers = [selectedItemsReducer, dragReducer];
+    const reducers = [selectedItemsReducer, dragReducer, dirtyReducer];
     const newState = reducers.reduce((oldState, reducer) => {
         return reducer(oldState, action);
     }, state);
-    axios.post('/save', newState, { headers: {'Content-Type': 'application/json'}})
-        .then(() => {
-            console.log('Saved State'); // eslint-disable-line
-        })
-        .catch((error) => {
-            console.log('Error saving state', error);   // eslint-disable-line
-        })
     return newState;
 }
 
@@ -118,9 +111,44 @@ function selectedItemsReducer(state, {type, payload}) {
     return newState;
 }
 
+function scheduleAutoSave(store) {
+    setInterval(() => {
+        if (store.getState().dirty === 'dirty') {
+            axios.post('/save', store.getState(), { headers: {'Content-Type': 'application/json'}})
+                .then(() => {
+                    store.dispatch({type: 'set-saved'});
+                })
+                .catch((error) => {
+                    store.dispatch({type: 'save-error', payload: error});
+                });
+        }
+    }, 500);
+}
+
+function dirtyReducer(state, {type}) {
+    let dirty = state.dirty;
+    switch (type) {
+        case 'set-saved': {
+            dirty = 'saved';
+        } break;
+
+        case 'save-error': {
+            dirty = 'erred';
+        } break;
+
+        default: {
+            if ((typeof dirty) === 'undefined' || dirty === 'saved') {
+                dirty = 'dirty';
+            }
+        } break;
+    }
+    return Object.assign({}, state, {dirty});
+}
+
 function _getStore(initialState) {
     if (!_getStore.stateStore) {
         _getStore.stateStore = createStore(reducer, initialState);
+        scheduleAutoSave(_getStore.stateStore);
         if (document) {
             document.addEventListener('keydown', (event) => {
                 if (event.keyCode === KEY_CODE_ESCAPE) {

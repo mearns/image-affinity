@@ -3,6 +3,7 @@ import {ImageItem} from './ImageItem';
 import {connect} from 'react-redux';
 
 const propTypes = {
+    dirty: React.PropTypes.string,
     itemList: React.PropTypes.array,
     getImageItemDispatch: React.PropTypes.func,
     handleMouseMove: React.PropTypes.func
@@ -19,9 +20,30 @@ class _Affinity extends React.Component {
                     />
                 );
         }, this);
+        const style = {
+            width: '100%',
+            height: '100%'
+        };
+        switch (this.props.dirty) {
+            case 'dirty': {
+                style.border = '2px solid yellow';
+            } break;
+
+            case 'saved': {
+                style.border = '2px solid green';
+            } break;
+
+            case 'erred': {
+                style.border = '2px solid red';
+            } break;
+
+            default: {
+                style.border = '2px solid gray';
+            } break;
+        }
         return (
             <div
-                style={{width: '100%', height: '100%'}}
+                style={style}
                 onMouseMove={this.props.handleMouseMove}
             >{itemList}
             </div>
@@ -39,8 +61,9 @@ function getListItemsFromState(state) {
 
 const mapStateToProps = (state) => {
     return {
-        itemList: getListItemsFromState(state)
-    }
+        itemList: getListItemsFromState(state),
+        dirty: state.dirty
+    };
 };
 
 const mapDispatchToProps = (dispatch) => {
